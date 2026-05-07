@@ -8,7 +8,8 @@ type Config struct {
 type DatabaseConfig struct {
 	Addr string `toml:"addr"`
 }
-
 type JWTConfig struct {
-	Secret string `toml:"secret"`
+	Secret          string `toml:"secret"`
+	AccessTokenTTL  string `toml:"access_token_ttl"`
+	RefreshTokenTTL string `toml:"refresh_token_ttl"`
 }

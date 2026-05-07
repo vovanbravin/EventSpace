@@ -1,0 +1,21 @@
+name: build.yml
+on:
+  pull_request:
+      branches: [main]
+  push:
+    branches: [main]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build docker-compose
+        run: |
+          mv .env_example .env
+          docker compose build 
+
+      - name: Run docker-compose
+        run : |
+          docker compose up -d
