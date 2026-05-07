@@ -36,10 +36,14 @@ func (h *AuthHandler) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	err = json.NewEncoder(w).Encode(map[string]interface{}{
 		"access_token": tokens.AccessToken,
 		"expires_at":   tokens.ExpiresAt,
 	})
+	if err != nil {
+		log.Printf("json encode error: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 }
 
 func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
@@ -62,10 +66,14 @@ func (h *AuthHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	err = json.NewEncoder(w).Encode(map[string]interface{}{
 		"access_token": tokens.AccessToken,
 		"expires_at":   tokens.ExpiresAt,
 	})
+	if err != nil {
+		log.Printf("json encode error: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 }
 
 func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
@@ -87,10 +95,14 @@ func (h *AuthHandler) Refresh(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]interface{}{
+	err = json.NewEncoder(w).Encode(map[string]interface{}{
 		"access_token": tokens.AccessToken,
 		"expires_at":   tokens.ExpiresAt,
 	})
+	if err != nil {
+		log.Printf("json encode error: %v", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
 
 }
 
