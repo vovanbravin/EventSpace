@@ -13,6 +13,9 @@ services:
       dockerfile: docker/auth-service/Dockerfile
     ports:
       - "8081:8081"
+    environment:
+      JWT_SECRET: ${JWT_SECRET}
+      DB_ADDR: ${DB_ADDR}
     depends_on:
       - db
 
@@ -20,9 +23,9 @@ services:
     image: postgres:17
     restart: always
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: test
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:

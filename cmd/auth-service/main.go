@@ -25,8 +25,10 @@ func LoadConfig() (*auth.Config, error) {
 		return nil, err
 	}
 
+	expanded := os.ExpandEnv(string(doc))
+
 	var config auth.Config
-	err = toml.Unmarshal(doc, &config)
+	err = toml.Unmarshal([]byte(expanded), &config)
 
 	if err != nil {
 		return nil, err
@@ -51,10 +53,22 @@ func main() {
 
 	defer db.Close()
 
+	accessTTL, err := time.ParseDuration(config.JWT.AccessTokenTTL)
+
+	if err != nil {
+		log.Fatalf("Error to parser access token ttl: %v", err.Error())
+	}
+
+	refreshTTL, err := time.ParseDuration(config.JWT.RefreshTokenTTL)
+
+	if err != nil {
+		log.Fatalf("Error to parser refresh token ttl: %v", err.Error())
+	}
+
 	userRepo := storage.NewUserRepository(db)
 	tokenRepo := storage.NewRefreshTokenRepository(db)
 	hasher := infrastructure.NewBcryptHasher(bcrypt.DefaultCost)
-	jwtService := infrastructure.NewJWTService(config.JWT.Secret, 15*time.Minute, 20*time.Hour)
+	jwtService := infrastructure.NewJWTService(config.JWT.Secret, accessTTL, refreshTTL)
 
 	authService := service.NewAuthService(hasher, tokenRepo, userRepo, jwtService)
 
