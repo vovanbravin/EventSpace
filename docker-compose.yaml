@@ -2,8 +2,43 @@ version: "3"
 
 services:
 
-  server:
+  api-gateway:
     build:
-      dockerfile: Dockerfile
+      dockerfile: docker/api-gateway/Dockerfile
     ports:
       - "8080:8080"
+
+  auth-service:
+    build:
+      dockerfile: docker/auth-service/Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
+
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    command: postgres -c ssl=off
+
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - ./migrations:/migrations
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://user:password@db:5432/test?sslmode=disable",
+      "up"
+    ]
+    depends_on:
+      - db
+volumes:
+  db_data:
