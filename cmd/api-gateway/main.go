@@ -10,22 +10,22 @@ import (
 
 func main() {
 
-	doc, err := os.ReadFile("config/server/config.toml")
+	doc, err := os.ReadFile("config/api-gateway/config.toml")
 
 	if err != nil {
-		log.Fatalf("Error to load server config: %v", err)
+		log.Fatalf("Error to load api-gateway config: %v", err)
 	}
 
 	var config server.Config
 	err = toml.Unmarshal(doc, &config)
 
 	if err != nil {
-		log.Fatalf("Error to parse server config: %v", err)
+		log.Fatalf("Error to parse api-gateway config: %v", err)
 	}
 
 	server := server.NewServer(&config)
 
 	if err = server.Start(); err != nil {
-		log.Fatalf("Error to start server: %v", err)
+		log.Fatalf("Error to start api-gateway: %v", err)
 	}
 }
