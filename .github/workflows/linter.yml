@@ -12,11 +12,11 @@ jobs:
 
       - name: Setup Go
         uses: actions/setup-go@v5
-        with:
-          version: '1.24'
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
+        with:
+          version: latest
 
 
 
