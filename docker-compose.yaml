@@ -11,8 +11,6 @@ services:
   auth-service:
     build:
       dockerfile: docker/auth-service/Dockerfile
-    ports:
-      - "8081:8081"
     environment:
       JWT_SECRET: ${JWT_SECRET}
       DB_ADDR: ${DB_ADDR}

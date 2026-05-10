@@ -113,7 +113,7 @@ func (h *AuthHandler) setRefreshTokenCookie(w http.ResponseWriter, refreshToken 
 		HttpOnly: true,
 		Secure:   true,
 		SameSite: http.SameSiteStrictMode,
-		Path:     "/refresh",
+		Path:     "/",
 		MaxAge:   7 * 24 * 3600,
 	})
 }
