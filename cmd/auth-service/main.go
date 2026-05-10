@@ -76,11 +76,11 @@ func main() {
 
 	authHandler := handler.NewAuthHandler(authService)
 
-	router.Post("/register", authHandler.RegisterHandler)
+	router.Post("/v1/auth/register", authHandler.RegisterHandler)
 
-	router.Post("/login", authHandler.Login)
+	router.Post("/v1/auth/login", authHandler.Login)
 
-	router.Post("/refresh", authHandler.Refresh)
+	router.Post("/v1/auth/refresh", authHandler.Refresh)
 
 	server := http.Server{
 		Addr:    ":8081",
