@@ -23,8 +23,10 @@ func NewUserRepository(db *pgxpool.Pool) *UserRepository {
 }
 
 func (r *UserRepository) Create(ctx context.Context, user *model.User) error {
-	_, err := r.db.Exec(ctx, `INSERT INTO users (id, email, password_hash, 
-		created_at) VALUES ($1, $2, $3, $4)`, user.ID, user.Email, user.PasswordHash, user.CreatedAt)
+	_, err := r.db.Exec(ctx, `INSERT INTO users (id, email, firstname, lastname,password_hash, 
+		created_at) VALUES ($1, $2, $3, $4, $5, $6)`, user.ID, user.Email,
+		user.Firstname, user.Lastname, user.PasswordHash,
+		user.CreatedAt)
 
 	return err
 }

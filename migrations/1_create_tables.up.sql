@@ -1,6 +1,8 @@
 CREATE TABLE users (
     id text primary key,
     email text not null unique,
+    firstname text not null,
+    lastname text not null,
     password_hash text not null,
     created_at timestamptz not null
 );
