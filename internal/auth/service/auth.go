@@ -32,17 +32,17 @@ func NewAuthService(hasher *infrastructure.BcryptHasher,
 	return &AuthService{hasher: hasher, tokensRepo: tokensRepo, userRepo: userRepo, jwt: jwt}
 }
 
-func (s *AuthService) Register(ctx context.Context, email, password string) (*dto.TokenResponse, error) {
+func (s *AuthService) Register(ctx context.Context, request dto.RegisterRequest) (*dto.TokenResponse, error) {
 
-	if email == "" {
+	if request.Email == "" {
 		return nil, ErrInvalidEmail
 	}
 
-	if utf8.RuneCountInString(password) < 6 {
+	if utf8.RuneCountInString(request.Password) < 6 {
 		return nil, ErrWeakPassword
 	}
 
-	exists, err := s.userRepo.Exists(ctx, email)
+	exists, err := s.userRepo.Exists(ctx, request.Email)
 
 	if err != nil {
 		return nil, err
@@ -51,23 +51,25 @@ func (s *AuthService) Register(ctx context.Context, email, password string) (*dt
 		return nil, ErrUserAlreadyExists
 	}
 
-	hash, err := s.hasher.Hash(password)
+	hash, err := s.hasher.Hash(request.Password)
 	if err != nil {
 		return nil, err
 	}
 
 	user := &model.User{
 		ID:           uuid.NewString(),
-		Email:        email,
+		Email:        request.Email,
 		PasswordHash: hash,
 		CreatedAt:    time.Now().UTC(),
+		Firstname:    request.Firstname,
+		Lastname:     request.Lastname,
 	}
 
 	if err = s.userRepo.Create(ctx, user); err != nil {
 		return nil, err
 	}
 
-	tokens, err := s.jwt.Generate(user.ID, email)
+	tokens, err := s.jwt.Generate(user.ID, request.Email)
 
 	if err != nil {
 		return nil, err
@@ -93,15 +95,15 @@ func (s *AuthService) Register(ctx context.Context, email, password string) (*dt
 	}, nil
 }
 
-func (s *AuthService) Login(ctx context.Context, email, password string) (*dto.TokenResponse, error) {
+func (s *AuthService) Login(ctx context.Context, request dto.LoginRequest) (*dto.TokenResponse, error) {
 
-	user, err := s.userRepo.GetByEmail(ctx, email)
+	user, err := s.userRepo.GetByEmail(ctx, request.Email)
 
 	if err != nil {
 		return nil, errors.New("invalid credentials")
 	}
 
-	if err = s.hasher.Verify(password, user.PasswordHash); err != nil {
+	if err = s.hasher.Verify(request.Password, user.PasswordHash); err != nil {
 		return nil, errors.New("invalid credentials")
 	}
 

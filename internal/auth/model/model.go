@@ -18,4 +18,6 @@ type User struct {
 	Email        string    `db:"email"`
 	PasswordHash string    `db:"password_hash"`
 	CreatedAt    time.Time `db:"created_at"`
+	Firstname    string    `db:"firstname"`
+	Lastname     string    `db:"lastname"`
 }
